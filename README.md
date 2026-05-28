@@ -1,11 +1,12 @@
 # Vercel 소개 페이지
 
-간단한 정적 소개 페이지입니다. Vercel에서 별도 빌드 설정 없이 배포할 수 있습니다.
+모던한 정적 소개 홈페이지입니다. Vercel에서 별도 빌드 설정 없이 배포할 수 있습니다.
 
 ## 수정할 곳
 
 - `index.html`의 이름, 소개 문구, 이메일, GitHub 링크
 - `styles.css`의 색상과 간격
+- `assets/hero-workspace.png`의 히어로 이미지
 
 ## Vercel 배포
 

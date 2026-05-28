@@ -5,47 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Vercel로 배포하기 위한 간단한 개인 소개 페이지입니다."
+      content="Vercel로 배포하는 모던 개인 소개 홈페이지입니다."
     />
-    <title>소개 페이지</title>
+    <title>hororong | Intro</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="page-shell">
-      <section class="intro" aria-labelledby="intro-title">
-        <div class="profile-mark" aria-hidden="true">H</div>
+    <header class="site-header" aria-label="상단 내비게이션">
+      <a class="brand" href="#top" aria-label="홈으로 이동">
+        <span class="brand-mark">H</span>
+        <span>hororong</span>
+      </a>
+      <nav>
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="mailto:hello@example.com">Contact</a>
+      </nav>
+    </header>
 
-        <div class="intro-copy">
-          <p class="eyebrow">Personal Introduction</p>
-          <h1 id="intro-title">안녕하세요, hororong입니다.</h1>
-          <p class="summary">
-            웹에 올릴 수 있는 간단한 소개 페이지입니다. 이름, 소개 문구,
-            연락처만 바꾸면 바로 개인 프로필이나 포트폴리오 첫 화면으로 사용할
-            수 있습니다.
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Personal Homepage</p>
+          <h1 id="hero-title">아이디어를 빠르게 만들고 웹에 올립니다.</h1>
+          <p class="hero-summary">
+            작은 실험부터 배포 가능한 웹페이지까지, 보기 좋고 사용하기 쉬운
+            결과물로 정리하는 일을 좋아합니다.
           </p>
-
-          <div class="actions" aria-label="주요 링크">
+          <div class="hero-actions" aria-label="주요 링크">
             <a class="button primary" href="mailto:hello@example.com">메일 보내기</a>
-            <a class="button secondary" href="https://github.com/" target="_blank" rel="noreferrer">
-              GitHub
+            <a class="button secondary" href="https://github.com/pg1130-beep" target="_blank" rel="noreferrer">
+              GitHub 보기
             </a>
           </div>
         </div>
+
+        <figure class="hero-visual">
+          <img
+            src="assets/hero-workspace.png"
+            alt="노트북과 인터페이스 패널이 놓인 모던 작업공간"
+          />
+          <figcaption>
+            <strong>Now building</strong>
+            <span>Intro page on Vercel</span>
+          </figcaption>
+        </figure>
       </section>
 
-      <section class="details" aria-label="소개 상세">
+      <section class="metrics" aria-label="핵심 정보">
         <article>
-          <h2>관심 분야</h2>
-          <p>웹 서비스, 자동화, 사용하기 쉬운 인터페이스를 만드는 일에 관심이 있습니다.</p>
+          <span>01</span>
+          <strong>Static Website</strong>
+          <p>빠르게 열리고 Vercel에서 바로 배포되는 구조</p>
         </article>
         <article>
-          <h2>현재 하는 일</h2>
-          <p>아이디어를 빠르게 실험하고, 배포 가능한 형태로 정리하는 작업을 진행합니다.</p>
+          <span>02</span>
+          <strong>Clean Interface</strong>
+          <p>모바일과 데스크톱에서 안정적으로 보이는 화면</p>
         </article>
         <article>
-          <h2>연락</h2>
-          <p>hello@example.com 주소를 실제 이메일로 바꿔서 사용하세요.</p>
+          <span>03</span>
+          <strong>Easy Update</strong>
+          <p>HTML 문구만 바꿔도 소개 페이지를 바로 수정 가능</p>
         </article>
+      </section>
+
+      <section id="work" class="section-grid">
+        <div>
+          <p class="eyebrow">Selected Focus</p>
+          <h2>현재 관심 있는 작업</h2>
+        </div>
+        <div class="feature-list">
+          <article>
+            <h3>웹 서비스 프로토타입</h3>
+            <p>아이디어를 검증할 수 있는 작은 웹앱과 랜딩 페이지를 만듭니다.</p>
+          </article>
+          <article>
+            <h3>자동화와 배포</h3>
+            <p>반복 작업을 줄이고 결과물을 빠르게 공유할 수 있는 흐름을 정리합니다.</p>
+          </article>
+          <article>
+            <h3>사용자 경험</h3>
+            <p>복잡한 내용을 단순한 화면 구조와 명확한 인터랙션으로 풀어냅니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="about" class="about-band">
+        <div>
+          <p class="eyebrow">About</p>
+          <h2>간결하지만 완성도 있는 결과물을 지향합니다.</h2>
+        </div>
+        <p>
+          이 페이지는 GitHub와 Vercel을 연결해 배포할 수 있는 개인 소개
+          홈페이지입니다. 이름, 이메일, GitHub 링크, 소개 문구를 원하는 내용으로
+          바꾸면 포트폴리오 첫 화면으로 사용할 수 있습니다.
+        </p>
       </section>
     </main>
   </body>
