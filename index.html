@@ -20,15 +20,16 @@
         <a href="#work">Work</a>
         <a href="#about">About</a>
         <a href="mailto:hello@example.com">Contact</a>
+        <button class="nav-admin" type="button" data-admin-open>Admin</button>
       </nav>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">Personal Homepage</p>
-          <h1 id="hero-title">아이디어를 빠르게 만들고 웹에 올립니다.</h1>
-          <p class="hero-summary">
+          <p class="eyebrow" data-editable="eyebrow">Personal Homepage</p>
+          <h1 id="hero-title" data-editable="title">아이디어를 빠르게 만들고 웹에 올립니다.</h1>
+          <p class="hero-summary" data-editable="summary">
             작은 실험부터 배포 가능한 웹페이지까지, 보기 좋고 사용하기 쉬운
             결과물로 정리하는 일을 좋아합니다.
           </p>
@@ -46,8 +47,8 @@
             alt="노트북과 인터페이스 패널이 놓인 모던 작업공간"
           />
           <figcaption>
-            <strong>Now building</strong>
-            <span>Intro page on Vercel</span>
+            <strong data-editable="statusTitle">Now building</strong>
+            <span data-editable="statusText">Intro page on Vercel</span>
           </figcaption>
         </figure>
       </section>
@@ -73,7 +74,7 @@
       <section id="work" class="section-grid">
         <div>
           <p class="eyebrow">Selected Focus</p>
-          <h2>현재 관심 있는 작업</h2>
+          <h2 data-editable="workTitle">현재 관심 있는 작업</h2>
         </div>
         <div class="feature-list">
           <article>
@@ -94,14 +95,80 @@
       <section id="about" class="about-band">
         <div>
           <p class="eyebrow">About</p>
-          <h2>간결하지만 완성도 있는 결과물을 지향합니다.</h2>
+          <h2 data-editable="aboutTitle">간결하지만 완성도 있는 결과물을 지향합니다.</h2>
         </div>
-        <p>
+        <p data-editable="aboutBody">
           이 페이지는 GitHub와 Vercel을 연결해 배포할 수 있는 개인 소개
           홈페이지입니다. 이름, 이메일, GitHub 링크, 소개 문구를 원하는 내용으로
           바꾸면 포트폴리오 첫 화면으로 사용할 수 있습니다.
         </p>
       </section>
     </main>
+
+    <div class="admin-overlay" data-admin-overlay hidden>
+      <aside class="admin-panel" aria-labelledby="admin-title" role="dialog" aria-modal="true">
+        <div class="admin-header">
+          <div>
+            <p class="admin-kicker">Admin</p>
+            <h2 id="admin-title">홈페이지 편집</h2>
+          </div>
+          <button class="icon-button" type="button" aria-label="관리자 패널 닫기" data-admin-close>
+            x
+          </button>
+        </div>
+
+        <form class="admin-login" data-admin-login>
+          <label for="admin-password">비밀번호</label>
+          <div class="admin-row">
+            <input id="admin-password" name="password" type="password" autocomplete="current-password" />
+            <button class="button primary" type="submit">열기</button>
+          </div>
+          <p class="admin-help">기본 비밀번호는 <strong>admin1234</strong>입니다.</p>
+        </form>
+
+        <form class="admin-editor" data-admin-editor hidden>
+          <label>
+            상단 라벨
+            <input name="eyebrow" type="text" />
+          </label>
+          <label>
+            메인 제목
+            <textarea name="title" rows="2"></textarea>
+          </label>
+          <label>
+            소개 문구
+            <textarea name="summary" rows="3"></textarea>
+          </label>
+          <label>
+            이미지 캡션 제목
+            <input name="statusTitle" type="text" />
+          </label>
+          <label>
+            이미지 캡션 설명
+            <input name="statusText" type="text" />
+          </label>
+          <label>
+            작업 섹션 제목
+            <input name="workTitle" type="text" />
+          </label>
+          <label>
+            소개 섹션 제목
+            <textarea name="aboutTitle" rows="2"></textarea>
+          </label>
+          <label>
+            소개 섹션 본문
+            <textarea name="aboutBody" rows="4"></textarea>
+          </label>
+
+          <div class="admin-actions">
+            <button class="button primary" type="submit">저장</button>
+            <button class="button secondary" type="button" data-admin-reset>초기화</button>
+          </div>
+          <p class="admin-help">변경 내용은 현재 브라우저에 저장됩니다.</p>
+        </form>
+      </aside>
+    </div>
+
+    <script src="script.js"></script>
   </body>
 </html>
