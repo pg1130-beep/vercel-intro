@@ -9,6 +9,7 @@ const closeButton = document.querySelector("[data-admin-close]");
 const loginForm = document.querySelector("[data-admin-login]");
 const editorForm = document.querySelector("[data-admin-editor]");
 const resetButton = document.querySelector("[data-admin-reset]");
+const adminStatus = document.querySelector("[data-admin-status]");
 let memoryContent = {};
 
 const createSupabaseClient = () => {
@@ -16,11 +17,72 @@ const createSupabaseClient = () => {
   const hasConfig = config.url && config.anonKey;
   const hasLibrary = window.supabase && typeof window.supabase.createClient === "function";
 
-  if (!hasConfig || !hasLibrary) {
+  if (!hasConfig) {
     return null;
   }
 
-  return window.supabase.createClient(config.url, config.anonKey);
+  if (hasLibrary) {
+    return {
+      async read() {
+        const client = window.supabase.createClient(config.url, config.anonKey);
+        const { data, error } = await client
+          .from("homepage_content")
+          .select("content")
+          .eq("id", 1)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        return data?.content || {};
+      },
+      async write(content) {
+        const client = window.supabase.createClient(config.url, config.anonKey);
+        const { error } = await client
+          .from("homepage_content")
+          .update({ content })
+          .eq("id", 1);
+
+        if (error) {
+          throw error;
+        }
+      },
+    };
+  }
+
+  const endpoint = `${config.url.replace(/\/$/, "")}/rest/v1/homepage_content?id=eq.1`;
+  const headers = {
+    apikey: config.anonKey,
+    Authorization: `Bearer ${config.anonKey}`,
+    "Content-Type": "application/json",
+  };
+
+  return {
+    async read() {
+      const response = await fetch(`${endpoint}&select=content`, {
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Supabase read failed: ${response.status}`);
+      }
+
+      const rows = await response.json();
+      return rows[0]?.content || {};
+    },
+    async write(content) {
+      const response = await fetch(endpoint, {
+        method: "PATCH",
+        headers,
+        body: JSON.stringify({ content }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Supabase write failed: ${response.status}`);
+      }
+    },
+  };
 };
 
 const supabaseClient = createSupabaseClient();
@@ -70,41 +132,40 @@ const applyContent = (content) => {
   });
 };
 
+const setAdminStatus = (message, type = "info") => {
+  if (!adminStatus) {
+    return;
+  }
+
+  adminStatus.textContent = message;
+  adminStatus.dataset.type = type;
+};
+
 const loadRemoteContent = async () => {
   if (!supabaseClient) {
     return null;
   }
 
-  const { data, error } = await supabaseClient
-    .from("homepage_content")
-    .select("content")
-    .eq("id", 1)
-    .single();
-
-  if (error) {
+  try {
+    return await supabaseClient.read();
+  } catch (error) {
     console.warn("Supabase load failed:", error.message);
     return null;
   }
-
-  return data?.content || {};
 };
 
 const saveRemoteContent = async (content) => {
   if (!supabaseClient) {
-    return false;
+    return true;
   }
 
-  const { error } = await supabaseClient
-    .from("homepage_content")
-    .update({ content })
-    .eq("id", 1);
-
-  if (error) {
+  try {
+    await supabaseClient.write(content);
+    return true;
+  } catch (error) {
     console.warn("Supabase save failed:", error.message);
     return false;
   }
-
-  return true;
 };
 
 const fillEditor = () => {
@@ -122,6 +183,7 @@ const openAdmin = () => {
   loginForm.hidden = false;
   editorForm.hidden = true;
   loginForm.reset();
+  setAdminStatus("");
   loginForm.elements.password.focus();
 };
 
@@ -178,14 +240,29 @@ editorForm.addEventListener("submit", async (event) => {
     nextContent[key] = field ? field.value.trim() || defaultContent[key] : defaultContent[key];
   });
 
-  await saveRemoteContent(nextContent);
+  const remoteSaved = await saveRemoteContent(nextContent);
+
+  if (supabaseClient && !remoteSaved) {
+    setAdminStatus("Supabase 저장에 실패했습니다. SQL/RLS 설정을 확인하세요.", "error");
+    return;
+  }
+
   storage.set(nextContent);
   applyContent(nextContent);
+  setAdminStatus("저장되었습니다.", "success");
   closeAdmin();
 });
 
-resetButton.addEventListener("click", () => {
+resetButton.addEventListener("click", async () => {
+  const remoteSaved = await saveRemoteContent({});
+
+  if (supabaseClient && !remoteSaved) {
+    setAdminStatus("Supabase 초기화에 실패했습니다.", "error");
+    return;
+  }
+
   storage.clear();
   applyContent(defaultContent);
   fillEditor();
+  setAdminStatus("초기화되었습니다.", "success");
 });

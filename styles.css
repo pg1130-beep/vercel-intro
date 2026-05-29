@@ -467,6 +467,23 @@ h3 {
   line-height: 1.5;
 }
 
+.admin-status {
+  min-height: 20px;
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.admin-status[data-type="success"] {
+  color: var(--teal-dark);
+}
+
+.admin-status[data-type="error"] {
+  color: #b42318;
+}
+
 .admin-actions {
   display: flex;
   flex-wrap: wrap;
