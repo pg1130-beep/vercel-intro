@@ -11,6 +11,20 @@ const editorForm = document.querySelector("[data-admin-editor]");
 const resetButton = document.querySelector("[data-admin-reset]");
 let memoryContent = {};
 
+const createSupabaseClient = () => {
+  const config = window.SUPABASE_CONFIG || {};
+  const hasConfig = config.url && config.anonKey;
+  const hasLibrary = window.supabase && typeof window.supabase.createClient === "function";
+
+  if (!hasConfig || !hasLibrary) {
+    return null;
+  }
+
+  return window.supabase.createClient(config.url, config.anonKey);
+};
+
+const supabaseClient = createSupabaseClient();
+
 const storage = {
   get() {
     if (typeof window.localStorage === "undefined") {
@@ -56,6 +70,43 @@ const applyContent = (content) => {
   });
 };
 
+const loadRemoteContent = async () => {
+  if (!supabaseClient) {
+    return null;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("homepage_content")
+    .select("content")
+    .eq("id", 1)
+    .single();
+
+  if (error) {
+    console.warn("Supabase load failed:", error.message);
+    return null;
+  }
+
+  return data?.content || {};
+};
+
+const saveRemoteContent = async (content) => {
+  if (!supabaseClient) {
+    return false;
+  }
+
+  const { error } = await supabaseClient
+    .from("homepage_content")
+    .update({ content })
+    .eq("id", 1);
+
+  if (error) {
+    console.warn("Supabase save failed:", error.message);
+    return false;
+  }
+
+  return true;
+};
+
 const fillEditor = () => {
   const currentContent = { ...defaultContent, ...readSavedContent() };
   Object.entries(currentContent).forEach(([key, value]) => {
@@ -79,6 +130,13 @@ const closeAdmin = () => {
 };
 
 applyContent(readSavedContent());
+
+loadRemoteContent().then((remoteContent) => {
+  if (remoteContent) {
+    applyContent(remoteContent);
+    storage.set(remoteContent);
+  }
+});
 
 openButton.addEventListener("click", openAdmin);
 closeButton.addEventListener("click", closeAdmin);
@@ -111,7 +169,7 @@ loginForm.addEventListener("submit", (event) => {
   editorForm.elements.title.focus();
 });
 
-editorForm.addEventListener("submit", (event) => {
+editorForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const nextContent = {};
@@ -120,6 +178,7 @@ editorForm.addEventListener("submit", (event) => {
     nextContent[key] = field ? field.value.trim() || defaultContent[key] : defaultContent[key];
   });
 
+  await saveRemoteContent(nextContent);
   storage.set(nextContent);
   applyContent(nextContent);
   closeAdmin();
