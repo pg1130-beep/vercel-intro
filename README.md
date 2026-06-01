@@ -7,6 +7,7 @@
 - `index.html`의 이름, 소개 문구, 이메일, GitHub 링크
 - `styles.css`의 색상과 간격
 - `assets/hero-workspace.png`의 히어로 이미지
+- `assets/kid-designer-hero.png`의 손그림 히어로 이미지
 - `script.js`의 관리자 패널 기본 비밀번호
 - `supabase-config.js`의 Supabase 프로젝트 URL과 anon key
 
